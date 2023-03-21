@@ -39,6 +39,35 @@ const register = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
+        if (!user) {
+            return res.status(404).json({ errors: ["Usuario não encontrado."] });
+        }
 
-module.exports = { register };
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(422).json({ errors: ["Senha invalida."] });
+        }
+
+        return res.status(201).json({
+            _id: user._id,
+            profileImage: user.profileImage,
+            token: generateToken(user._id),
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(422).json({
+            errors: ["Houve um erro, por favor tente novamente mais tarde."],
+        });
+    }
+}
+
+module.exports = {
+    register,
+    login,
+};
