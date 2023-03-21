@@ -18,7 +18,7 @@ const register = async (req, res) => {
             return res.status(422).json({ errors: ["Por favor, utilize outro e-mail"] });
         }
 
-        const salt = await bcrypt.getSalt();
+        const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
 
         const newUser = await User.create({
