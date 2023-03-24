@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Solve CORS
-app.use(cors({credentials: true, origin: "http://localhost:3000"}));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 // Upload directory
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
@@ -23,8 +23,13 @@ require("./config/db.js");
 
 // routes
 const router = require("./routes/Router.js");
-
 app.use(router);
+
+// Lida com erros
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Erro interno do servidor.");
+});
 
 app.listen(port, () => {
     console.log(`App rodando na porta ${port}`);
