@@ -46,7 +46,7 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ errors: ["Usuario não encontrado."] });
+            return res.status(404).json({ errors: ["Usuário não encontrado."] });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -112,9 +112,27 @@ const update = async (req, res) => {
     res.status(200).json(user);
 }
 
+// Get user by id
+const getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+    
+        const user = await User.findById(id).select("-password");
+    
+        if(!user){
+            return res.status(404).json({ errors: ["Usuário não encontrado"]});
+        }
+    
+        res.status(200).json(user);
+    } catch (error) {
+        return res.status(400).json({ errors: ["id invalido"]});
+    }
+}
+
 module.exports = {
     register,
     login,
     getCurrentUser,
-    update
+    update,
+    getUserById
 };
