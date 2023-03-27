@@ -57,7 +57,19 @@ const deletePhoto = async (req, res) => {
     }
 }
 
+const getAllPhotos = async (req, res) => {
+    try {
+        const photos = await Photo.find({}).sort([["createdAt", -1]]).exec();
+
+        res.status(200).json(photos);
+    } catch (error) {
+        console.error(error)
+        return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
+    }
+}
+
 module.exports = {
     insertPhoto,
-    deletePhoto
+    deletePhoto,
+    getAllPhotos
 }
