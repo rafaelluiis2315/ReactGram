@@ -88,10 +88,39 @@ const getPhotoById = async (req, res) => {
         const photo = await Photo.findById(id);
 
         if (!photo) {
-           return res.status(404).json({ errors: ["Foto não encontrada"] })
+            return res.status(404).json({ errors: ["Foto não encontrada"] })
         }
 
-        res.status(200).json(photos);
+        res.status(200).json(photo);
+    } catch (error) {
+        console.error(error)
+        return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
+    }
+}
+
+const updatePhoto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title } = req.body;
+        const reqUser = req.user;
+
+        const photo = await Photo.findById(id);
+
+        if (!photo) {
+            return res.status(404).json({ errors: ["Foto não encontrada"] })
+        }
+
+        if (photo.userId.equals(reqUser._id)) {
+            return res.status(422).json({ errors: ["Acesso negado!"] });
+        }
+
+        if (title) {
+            photo.title = title
+        }
+
+        await photo.save();
+
+        res.status(200).json({ photo, message: "Foto atualizada com sucesso!" });
     } catch (error) {
         console.error(error)
         return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
@@ -103,5 +132,6 @@ module.exports = {
     deletePhoto,
     getAllPhotos,
     getUserPhotos,
-    getPhotoById
+    getPhotoById,
+    updatePhoto
 }
