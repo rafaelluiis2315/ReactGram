@@ -72,7 +72,24 @@ const getUserPhotos = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const photos = await Photo.find({userId: id}).sort([["createdAt", -1]]).exec();
+        const photos = await Photo.find({ userId: id }).sort([["createdAt", -1]]).exec();
+
+        res.status(200).json(photos);
+    } catch (error) {
+        console.error(error)
+        return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
+    }
+}
+
+const getPhotoById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const photo = await Photo.findById(id);
+
+        if (!photo) {
+           return res.status(404).json({ errors: ["Foto não encontrada"] })
+        }
 
         res.status(200).json(photos);
     } catch (error) {
@@ -85,5 +102,6 @@ module.exports = {
     insertPhoto,
     deletePhoto,
     getAllPhotos,
-    getUserPhotos
+    getUserPhotos,
+    getPhotoById
 }
