@@ -32,6 +32,32 @@ const insertPhoto = async (req, res) => {
     }
 }
 
+const deletePhoto = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const reqUser = req.user;
+
+        const photo = await Photo.findById(id);
+
+        if (!photo) {
+            return res.status(404).json({ errors: ["Foto não encontrada"] });
+        }
+
+        if (!photo.userId.equals(reqUser.id)) {
+            return res.status(422).json({ errors: ["Acesso negado!"] });
+        }
+
+        await Photo.findByIdAndDelete(photo._id);
+
+        res.status(200).json({ id: photo._id, message: "Foto excluída com sucesso." });
+    } catch (error) {
+        console.error(error)
+        return res.status(400).json({ errors: ["id invalido"] });
+    }
+}
+
 module.exports = {
     insertPhoto,
+    deletePhoto
 }
