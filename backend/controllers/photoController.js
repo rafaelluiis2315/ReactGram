@@ -126,6 +126,7 @@ const updatePhoto = async (req, res) => {
         return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
     }
 }
+
 const likePhoto = async (req, res) => {
     try {
         const { id } = req.params;
@@ -152,6 +153,37 @@ const likePhoto = async (req, res) => {
     }
 }
 
+const commentPhoto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { comment } = req.body
+        const reqUser = req.user;
+
+        const user = await User.findById(reqUser._id);
+        const photo = await Photo.findById(id);
+
+        if (!photo) {
+            return res.status(404).json({ errors: ["Foto não encontrada"] })
+        }
+
+        const userComment = {
+            comment,
+            userName: user.name,
+            userImage: user.profileImage,
+            userId: user._id
+        }
+
+        photo.comments.push(userComment)
+
+        await photo.save();
+
+        res.status(200).json({ comment: userComment, message: "O comentário foi adicionado com sucesso!" });
+    } catch (error) {
+        console.error(error)
+        return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
+    }
+}
+
 module.exports = {
     insertPhoto,
     deletePhoto,
@@ -159,5 +191,6 @@ module.exports = {
     getUserPhotos,
     getPhotoById,
     updatePhoto,
-    likePhoto
+    likePhoto,
+    commentPhoto
 }

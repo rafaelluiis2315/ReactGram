@@ -18,13 +18,22 @@ const photoInsertValidation  = () => {
 const photoUpdateValidation  = () => {
     return [
         body("title")
-            .not().equals("undefined").withMessage("O título e obrigatório.")
-            .isString().withMessage("O título e obrigatório.")
+            .not().equals("undefined").withMessage("O título é obrigatório.")
+            .isString().withMessage("O título é obrigatório.")
             .isLength({min: 3}).withMessage("O título precisa ter no mínimo 3 caracteres."),
+    ]
+}
+
+const commentValidation  = () => {
+    return [
+        body("comment")
+            .not().equals("undefined").withMessage("O Comentário é obrigatório.")
+            .isString().withMessage("O Comentário é obrigatório."),
     ]
 }
 
 module.exports = {
     photoInsertValidation,
-    photoUpdateValidation
+    photoUpdateValidation,
+    commentValidation
 }
