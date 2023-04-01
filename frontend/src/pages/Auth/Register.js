@@ -7,11 +7,22 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Register = () => {
-  
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [consfirmePassword, setConsfirmePassword] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    
+    const user = {
+      name,
+      email,
+      password,
+      consfirmePassword
+    }
+
+    console.log(user);
   };
 
   return (
@@ -22,19 +33,26 @@ const Register = () => {
         <input
           type="text"
           placeholder="Nome"
+          onChange={(e) => setName(e.target.value)}
+          value={name}
         />
         <input
           type="email"
           placeholder="E-mail"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
         />
         <input
           type="password"
           placeholder="Senha"
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
         />
         <input
           type="password"
           placeholder="Confirme a senha"
-
+          onChange={(e) => setConsfirmePassword(e.target.value)}
+          value={consfirmePassword}
         />
         <input type="submit" value="Cadastrar" />
       </form>
