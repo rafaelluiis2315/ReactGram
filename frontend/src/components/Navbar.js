@@ -11,15 +11,21 @@ const Navbar = () => {
                 <input type="text" />
             </form>
             <ul id='nav-links'>
-                <NavLink to="/">
-                    <BsHouseDoorFill/>
-                </NavLink>
-                <NavLink to="/login">
-                    Entar
-                </NavLink>
-                <NavLink to="/register">
-                    Cadastrar
-                </NavLink>
+                <li>
+                    <NavLink to="/">
+                        <BsHouseDoorFill />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/login">
+                        Entar
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/register">
+                        Cadastrar
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     )
