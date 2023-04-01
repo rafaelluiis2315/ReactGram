@@ -13,7 +13,7 @@ const userCreateValidation = () => {
             .isLength({min: 5}).withMessage("A senha precisa ter no mínimo 5 caracteres.")
             .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/)
             .withMessage("A senha precisa conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial."),
-        body("confirmpassword")
+        body("confirmPassword")
             .isString().withMessage("A confirmação de senha é obrigatório.")
             .custom((value, {req}) => {
                 if(value != req.body.password){
