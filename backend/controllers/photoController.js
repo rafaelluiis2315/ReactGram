@@ -1,6 +1,8 @@
 const Photo = require("../models/Photo");
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const path = require("path");
+const fs = require("fs");
 
 // Insert a photo, with an user related to it
 const insertPhoto = async (req, res) => {
@@ -47,6 +49,13 @@ const deletePhoto = async (req, res) => {
         if (!photo.userId.equals(reqUser.id)) {
             return res.status(422).json({ errors: ["Acesso negado!"] });
         }
+
+        const  filePath = path.join(__dirname, '..', 'uploads', 'photos', photo.image);
+
+        fs.unlink( filePath, (err) => {
+            if (err) throw err;
+            console.log('Arquivo excluído com sucesso!');
+        });
 
         await Photo.findByIdAndDelete(photo._id);
 
@@ -138,7 +147,7 @@ const likePhoto = async (req, res) => {
             return res.status(404).json({ errors: ["Foto não encontrada"] })
         }
 
-        if (photo.likes.include(reqUser._id)) {
+        if (photo.likes.includes(reqUser._id)) {
             return res.status(422).json({ errors: ["Você já curtiu a foto."] })
         }
 
