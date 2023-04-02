@@ -39,10 +39,10 @@ label span {
     font-weight: bold;
     margin-bottom: 0.5em;
     color: #aaa;
-    font-size: 0.7em;
+    font-size: 0.9em;
 }
 
-input {
+input, textarea {
     background-color: #3b3b3b;
     color: #aaa;
     border: 1px solid #555;
@@ -50,9 +50,11 @@ input {
     padding: 10px 8px;
     outline: none;
     margin-bottom: 0.6em;
+    font-size: 0.9;
+    font-family: "Roboto", sans-serif;
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
     color: #aaa;
 }
 
