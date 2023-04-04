@@ -118,8 +118,8 @@ const updatePhoto = async (req, res) => {
         if (!photo) {
             return res.status(404).json({ errors: ["Foto não encontrada"] })
         }
-
-        if (photo.userId.equals(reqUser._id)) {
+        
+        if (!photo.userId.equals(reqUser._id)) {
             return res.status(422).json({ errors: ["Acesso negado!"] });
         }
 
