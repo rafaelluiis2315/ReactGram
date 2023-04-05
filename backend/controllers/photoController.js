@@ -50,11 +50,13 @@ const deletePhoto = async (req, res) => {
             return res.status(422).json({ errors: ["Acesso negado!"] });
         }
 
-        const  filePath = path.join(__dirname, '..', 'uploads', 'photos', photo.image);
+        const filePath = path.join(__dirname, '..', 'uploads', 'photos', photo.image);
 
-        fs.unlink( filePath, (err) => {
-            if (err) throw err;
-            console.log('Arquivo excluído com sucesso!');
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ errors: ["Falha ao excluir a foto"] });
+            }
         });
 
         await Photo.findByIdAndDelete(photo._id);
@@ -118,7 +120,7 @@ const updatePhoto = async (req, res) => {
         if (!photo) {
             return res.status(404).json({ errors: ["Foto não encontrada"] })
         }
-        
+
         if (!photo.userId.equals(reqUser._id)) {
             return res.status(422).json({ errors: ["Acesso negado!"] });
         }
@@ -139,23 +141,29 @@ const updatePhoto = async (req, res) => {
 const likePhoto = async (req, res) => {
     try {
         const { id } = req.params;
+
         const reqUser = req.user;
 
         const photo = await Photo.findById(id);
 
+        // Check if photo exists
         if (!photo) {
-            return res.status(404).json({ errors: ["Foto não encontrada"] })
+            return res.status(404).json({ errors: ["Foto não encontrada!"] });
         }
 
+        // Check if user already liked the photo
         if (photo.likes.includes(reqUser._id)) {
-            return res.status(422).json({ errors: ["Você já curtiu a foto."] })
+            return res.status(422).json({ errors: ["Você já curtiu esta foto."] });
         }
 
-        photo.likes.push(reqUser._id)
+        // Put user id in array of likes
+        photo.likes.push(reqUser._id);
 
         await photo.save();
 
-        res.status(200).json({ photoId: id, userId: reqUser, message: "Foto atualizada com sucesso!" });
+        res
+            .status(200)
+            .json({ photoId: id, userId: reqUser._id, message: "A foto foi curtida!" });
     } catch (error) {
         console.error(error)
         return res.status(422).json({ errors: ["Houve um erro, por favor tente novamente mais tarde."] });
