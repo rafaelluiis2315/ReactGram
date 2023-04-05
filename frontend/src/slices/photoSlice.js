@@ -57,8 +57,8 @@ export const updatePhoto = createAsyncThunk("photo/update",
         const token = thunkAPI.getState().auth.user.token;
 
         const data = await photoService.updatePhoto(
-            { title: photoData.title }, 
-            photoData.id, 
+            { title: photoData.title },
+            photoData.id,
             token
         );
 
@@ -71,11 +71,27 @@ export const updatePhoto = createAsyncThunk("photo/update",
 );
 
 // Get photos by id
-export const getPhoto= createAsyncThunk("photo/PhotosById",
+export const getPhoto = createAsyncThunk("photo/getPhoto",
     async (id, thunkAPI) => {
         const token = thunkAPI.getState().auth.user.token;
 
         const data = await photoService.getPhoto(id, token);
+
+        return data;
+    }
+);
+
+// Like a photo
+export const like = createAsyncThunk("photo/like",
+    async (id, thunkAPI) => {
+
+        const token = thunkAPI.getState().auth.user.token;
+
+        const data = await photoService.like(id, token);
+
+        if (data.errors) {
+            return thunkAPI.rejectWithValue(data.errors[0])
+        }
 
         return data;
     }
@@ -131,7 +147,7 @@ export const photoSlice = createSlice({
                 });
                 state.message = action.payload.message
             })
-            .addCase(deletePhoto.rejected, (state, action) =>{
+            .addCase(deletePhoto.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
                 state.photo = {};
@@ -146,13 +162,13 @@ export const photoSlice = createSlice({
                 state.error = null;
 
                 state.photos.map((photo) => {
-                    if (photo._id === action.payload.photo._id){
-                       return photo.title = action.payload.photo.title
+                    if (photo._id === action.payload.photo._id) {
+                        return photo.title = action.payload.photo.title
                     }
 
                     return photo
                 });
-                
+
                 state.message = action.payload.message
             })
             .addCase(updatePhoto.rejected, (state, action) => {
@@ -169,6 +185,28 @@ export const photoSlice = createSlice({
                 state.success = true;
                 state.error = null;
                 state.photo = action.payload;
+            })
+            .addCase(like.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = true;
+                state.error = null;
+
+                if (state.photo.likes) {
+                    state.photo.likes.push(action.payload.userId);
+                }
+
+                state.photos.map((photo) => {
+                    if (photo._id === action.payload.photoId) {
+                        return photo.likes.push(action.payload.userId);
+                    }
+                    return photo;
+                });
+
+                state.message = action.payload.message;
+            })
+            .addCase(like.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     }
 })
