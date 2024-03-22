@@ -16,7 +16,7 @@ const register = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (user) {
-            return res.status(422).json({ errors: ["Por favor, utilize outro e-mail"] });
+            return res.status(422).json({ errors: ["Este e-mail já está em uso. Por favor, informe outro."] });
         }
 
         const salt = await bcrypt.genSalt();
